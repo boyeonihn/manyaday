@@ -1,17 +1,18 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient();
 const user = useSupabaseUser();
-
-const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) console.log(error);
-};
-console.log(user);
 </script>
 <template>
+  <h1 class="font-bold text-xl">many a day</h1>
+  <span>A line a day</span>
   <div v-if="user">
-    <UButton @click="signOut">Signout</UButton>
+    <UButton
+      ><ULink to="/today"
+        >You're logged in. Go to your Diaries today!</ULink
+      ></UButton
+    >
+    <LogoutButton />
   </div>
-
-  <h1 class="font-bold text-xl">HELLO</h1>
+  <UButton v-else
+    ><ULink to="/login">You're not logged in, LOGIN!</ULink>
+  </UButton>
 </template>

@@ -2,16 +2,29 @@
 import type { FormError, FormSubmitEvent } from '#ui/types';
 
 const supabase = useSupabaseClient();
+const user = useSupabaseUser();
 
+watchEffect(() => {
+  if (user.value) {
+    console.log('logged in');
+    navigateTo('/today');
+  }
+});
+
+// EMAIL LOGIN setup
+/*
 const state = reactive({
   email: undefined,
   password: undefined,
 });
 
 const onEmailLogin = async (event: FormSubmitEvent<any>) => {
+  if (!state.email || !state.password) {
+    return;
+  }
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: 'example@email.com',
-    password: 'example-password',
+    email: state.email,
+    password: state.password,
   });
 };
 
@@ -21,6 +34,7 @@ const validate = (state: any): FormError[] => {
   if (!state.password) errors.push({ path: 'password', message: 'Required' });
   return errors;
 };
+*/
 </script>
 
 <template>
@@ -29,7 +43,7 @@ const validate = (state: any): FormError[] => {
       Sign in to your account
     </h2>
     <LoginCard>
-      <UForm :state="state" :validate="validate" @submit="onEmailLogin">
+      <!-- <UForm :state="state" :validate="validate" @submit="onEmailLogin">
         <UFormGroup label="Email" name="email">
           <UInput v-model="state.email" />
         </UFormGroup>
@@ -44,13 +58,20 @@ const validate = (state: any): FormError[] => {
         block
         label="Github"
         @click="supabase.auth.signInWithOAuth({ provider: 'github' })"
-      />
+      /> -->
       <UButton
         class="mt-3"
         icon="i-mdi-google"
         block
         label="Google"
-        @click="supabase.auth.signInWithOAuth({ provider: 'google' })"
+        @click="
+          supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: 'http://localhost:3000/confirm',
+            },
+          })
+        "
       />
     </LoginCard>
   </div>

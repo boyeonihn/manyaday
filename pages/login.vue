@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types';
-
+const runtimeConfig = useRuntimeConfig();
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 
@@ -68,7 +68,7 @@ const validate = (state: any): FormError[] => {
           supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-              redirectTo: 'http://localhost:3000/confirm',
+              redirectTo: `${runtimeConfig.public.baseUrl}/confirm`,
             },
           })
         "

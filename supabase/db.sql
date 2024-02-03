@@ -9,7 +9,7 @@ create table profiles (
   username text
 );
 alter table profiles enable row level security;
-create policy "Can view own account." on profiles for select using (auth.uid() = user_id);
+create policy "Can view own profile." on profiles for select using (auth.uid() = user_id);
 
 create policy "Users can insert their own profile."
   on profiles for insert

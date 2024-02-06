@@ -3,6 +3,9 @@ import { DatePicker as VCalendarDatePicker } from 'v-calendar';
 import type { DatePickerDate } from 'v-calendar/dist/types/src/use/datePicker';
 import 'v-calendar/dist/style.css';
 
+const today = new Date();
+const minDate = new Date(today).setDate(today.getDate() - 7);
+
 const props = defineProps({
   modelValue: {
     type: [Date, Object] as PropType<DatePickerDate | null>,
@@ -32,8 +35,11 @@ const attrs = {
 <template>
   <VCalendarDatePicker
     v-if="date && typeof date === 'object'"
+    title-position="left"
+    :max-date="today"
+    :min-date="minDate"
     v-model="date"
-    :columns="2"
+    :columns="1"
     v-bind="{ ...attrs, ...$attrs }"
   />
   <VCalendarDatePicker v-else v-model="date" v-bind="{ ...attrs, ...$attrs }" />

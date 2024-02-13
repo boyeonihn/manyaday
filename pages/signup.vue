@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types';
+import type { Database } from '@/types/database.types';
 
-const supabase = useSupabaseClient();
+const supabase = useSupabaseClient<Database>();
 
 const state = reactive({
   email: undefined,

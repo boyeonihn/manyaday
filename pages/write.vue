@@ -2,7 +2,7 @@
 import type { FormError, FormSubmitEvent } from '#ui/types';
 import { format } from 'date-fns';
 
-const state = reactive({
+const entry = reactive({
   date: new Date(),
   content: '',
   isPrivate: false,
@@ -10,7 +10,7 @@ const state = reactive({
 
 const validate = (state: any): FormError[] => {
   const errors = [];
-  if (!state.content)
+  if (!entry.content)
     errors.push({
       path: 'content',
       message: "It's an empty post!",
@@ -21,30 +21,30 @@ const validate = (state: any): FormError[] => {
 </script>
 
 <template>
-  writing a post for [[ {{ format(state.date, 'MMM do, yyy') }} ]]
+  writing a post for [[ {{ format(entry.date, 'MMM do, yyy') }} ]]
   <UForm
     :validate="validate"
-    :state="state"
+    :state="entry"
     class="space-y-4"
-    @submit="onSubmit"
+    @submit="createEntry"
   >
     <UPopover overlay mode="click" :popper="{ placement: 'bottom-start' }">
       <UButton
         icon="i-heroicons-calendar-days-20-solid"
-        :label="format(state.date, 'MMM do, yyy')"
+        :label="format(entry.date, 'MMM do, yyy')"
       />
       <template #panel="{ close }">
-        <DatePicker v-model="state.date" @close="close" />
+        <DatePicker v-model="entry.date" @close="close" />
       </template>
     </UPopover>
     <UCheckbox
-      v-model="state.isPrivate"
+      v-model="entry.isPrivate"
       name="isPrivate"
-      label="Make post public"
+      label="Private post"
     />
     <UFormGroup label="Content" name="content">
       <UTextarea
-        v-model="state.content"
+        v-model="entry.content"
         variant="outline"
         placeholder="Tell me about your day..."
       />

@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types';
+import type { Database } from '@/types/database.types';
 import { format } from 'date-fns';
+
+const supabase = useSupabaseClient<Database>();
+const user = useSupabaseUser();
+const user_id = user.value!.id;
 
 const entry = reactive({
   date: new Date(),
   content: '',
   isPrivate: false,
 });
+
+let status: 'init' | 'submitting' | 'error' = 'init';
 
 const validate = (state: any): FormError[] => {
   const errors = [];
@@ -18,10 +25,34 @@ const validate = (state: any): FormError[] => {
   return errors;
 };
 
+const savePost = () => {
+  console.log('click save');
+};
+
+const createEntry = async (event: FormSubmitEvent<any>) => {
+  // need to reach supabase to add entry
+  if (entry.content.trim().length === 0) {
+    return;
+  }
+
+  const { data, error } = await supabase.from('entries').insert({
+    content: entry.content,
+    is_private: entry.isPrivate,
+    created_ts: entry.date.toDateString(),
+    user_id,
+  });
+  if (error) {
+    status = 'error';
+    return;
+  } else {
+    navigateTo('/today'); // redirecting to /today for now
+  }
+};
 </script>
 
 <template>
   writing a post for [[ {{ format(entry.date, 'MMM do, yyy') }} ]]
+  <div v-if="status === 'error'">{{ 'there is something wrong' }}</div>
   <UForm
     :validate="validate"
     :state="entry"

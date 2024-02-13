@@ -45,6 +45,8 @@ create table
     is_private boolean not null,
     content text not null,
     month_day text
+    constraint entries_pkey primary key (id),
+    constraint entries_user_id_fkey foreign key (user_id) references auth.users (id)
 );
 
 alter table entries enable row level security;

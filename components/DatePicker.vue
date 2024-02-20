@@ -4,7 +4,7 @@ import type { DatePickerDate } from 'v-calendar/dist/types/src/use/datePicker';
 import 'v-calendar/dist/style.css';
 
 const today = new Date();
-const minDate = new Date(today).setDate(today.getDate() - 7);
+const earliestDate = new Date(new Date().getTime() - 4 * 24 * 60 * 60 * 1000);
 
 const props = defineProps({
   modelValue: {
@@ -37,7 +37,7 @@ const attrs = {
     v-if="date && typeof date === 'object'"
     title-position="left"
     :max-date="today"
-    :min-date="minDate"
+    :min-date="earliestDate"
     v-model="date"
     :columns="1"
     v-bind="{ ...attrs, ...$attrs }"

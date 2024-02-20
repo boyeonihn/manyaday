@@ -51,7 +51,6 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
 </script>
 
 <template>
-  writing a post for [[ {{ format(entry.date, 'MMM do, yyy') }} ]]
   <div v-if="status === 'error'">{{ 'there is something wrong' }}</div>
   <UForm
     :validate="validate"
@@ -60,10 +59,12 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
     @submit="createEntry"
   >
     <UPopover overlay mode="click" :popper="{ placement: 'bottom-start' }">
-      <UButton
-        icon="i-heroicons-calendar-days-20-solid"
-        :label="format(entry.date, 'MMM do, yyy')"
-      />
+      <span
+        >writing a post for
+        <UButton
+          icon="i-heroicons-calendar-days-20-solid"
+          :label="'[ [  ' + format(entry.date, 'MMM do, yyy') + '  ] ]'"
+      /></span>
       <template #panel="{ close }">
         <DatePicker v-model="entry.date" @close="close" />
       </template>

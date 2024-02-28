@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types';
-import type { Database } from '@/types/database.types';
 import { format } from 'date-fns';
+import type { Database } from '@/types/database.types';
 
 const supabase = useSupabaseClient<Database>();
 const user = useSupabaseUser();
@@ -62,8 +62,9 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
       <span
         >writing a post for
         <UButton
+          class="date"
           icon="i-heroicons-calendar-days-20-solid"
-          :label="'[ [  ' + format(entry.date, 'MMM do, yyy') + '  ] ]'"
+          :label="'[ [  ' + formatMmDdYyyy(entry.date.getTime()) + '  ] ]'"
       /></span>
       <template #panel="{ close }">
         <DatePicker v-model="entry.date" @close="close" />
@@ -86,3 +87,11 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
     <UButton type="submit"> Publish </UButton>
   </UForm>
 </template>
+
+<style>
+.date {
+  font-family: 'Italiana';
+  font-size: 1.5rem;
+  padding: 15px;
+}
+</style>

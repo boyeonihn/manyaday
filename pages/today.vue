@@ -30,3 +30,10 @@ const { data: entries } = await useAsyncData('entries', async () => {
     </li>
   </ul>
 </template>
+
+<style>
+h1 {
+  font-family: 'Italiana';
+  font-size: 3rem;
+}
+</style>

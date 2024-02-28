@@ -1,11 +1,32 @@
 <script setup lang="ts">
 import { format } from 'date-fns';
+import type { Database } from '@/types/database.types';
+const user = useSupabaseUser();
+const supabase = useSupabaseClient<Database>();
 
 const date = Date.now();
+const user_id = user.value!.id;
+
+const monthDay = extractMonthDay(date);
+const { data: entries } = await useAsyncData('entries', async () => {
+  const { data } = await supabase
+    .from('entries')
+    .select()
+    .eq('user_id', user_id)
+    .eq('month_day', monthDay)
+    .order('created_ts', { ascending: false });
+  return data;
+});
 </script>
 <template>
-  <h1>today is</h1>
-  <h2>{{ format(date, 'MMM do, yyy') }}</h2>
+  <h2>{{ upperCase('today is') }}</h2>
+  <h1>{{ `[[  ${formatMmDdYyyy(date)}  ]]` }}</h1>
   <LogoutButton />
-  <p>Here are all the diaries from this MM-DD date.</p>
+  <p>Here are all the diaries from {{ format(date, 'MMMM do') }}.</p>
+  <ul>
+    <li v-for="entry in entries" :key="entry.id">
+      <h3>{{ extractYear(entry.created_ts) }}</h3>
+      {{ entry.content }}
+    </li>
+  </ul>
 </template>

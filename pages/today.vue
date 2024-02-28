@@ -25,8 +25,7 @@ const { data: entries } = await useAsyncData('entries', async () => {
   <p>Here are all the diaries from {{ format(date, 'MMMM do') }}.</p>
   <ul>
     <li v-for="entry in entries" :key="entry.id">
-      <h3>{{ extractYear(entry.created_ts) }}</h3>
-      {{ entry.content }}
+      <EntryUnit :content="entry.content" :createdAt="entry.created_ts" />
     </li>
   </ul>
 </template>

@@ -5,4 +5,10 @@ body {
   margin-block-end: 2em;
   margin-inline-start: 2em;
   margin-inline-end: 2em;
+
+  background-color: hsl(0, 0%, 85%);
+}
+
+h1 {
+  color: hsl(223, 100%, 50%);
 }

@@ -1,5 +1,5 @@
 interface EntryInfo {
-  user_id: string;
+  userId: string;
   monthDay: string;
 }
 
@@ -12,30 +12,45 @@ interface Entry {
   updated_ts: string | null;
   user_id: string;
 }
-export const useEntries = ({ user_id, monthDay }: EntryInfo) => {
+
+export const useEntries = async ({ userId, monthDay }: EntryInfo) => {
   const supabase = useSupabase();
-  const error = ref<null | Error>(null);
-  const entries = ref<Entry[] | null>([]);
-
-  const getEntries = async () => {
-    try {
-      const { data } = await supabase
-        .from('entries')
-        .select()
-        .eq('user_id', user_id)
-        .eq('month_day', monthDay)
-        .order('created_ts', { ascending: false });
-
-      entries.value = data;
-    } catch (err) {
-      error.value = err as Error;
-      console.error('Error fetching entries: ', error);
-    }
-  };
-
-  getEntries();
-  return {
-    entries,
-    getEntries,
-  };
+  const { data: entries } = await useAsyncData('entries', async () => {
+    const { data } = await supabase
+      .from('entries')
+      .select()
+      .eq('user_id', userId)
+      .eq('month_day', monthDay)
+      .order('created_ts', { ascending: false });
+    return data;
+  });
+  return entries;
 };
+
+// export const useEntries = ({ user_id, monthDay }: EntryInfo) => {
+//   const supabase = useSupabase();
+//   const error = ref<null | Error>(null);
+//   const entries = ref<Entry[] | null>([]);
+
+//   const getEntries = async () => {
+//     try {
+//       const { data } = await supabase
+//         .from('entries')
+//         .select()
+//         .eq('user_id', user_id)
+//         .eq('month_day', monthDay)
+//         .order('created_ts', { ascending: false });
+
+//       entries.value = data;
+//     } catch (err) {
+//       error.value = err as Error;
+//       console.error('Error fetching entries: ', error);
+//     }
+//   };
+
+//   getEntries();
+//   return {
+//     entries,
+//     getEntries,
+//   };
+// };

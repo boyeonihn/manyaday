@@ -2,19 +2,22 @@
 const user = useSupabaseUser();
 
 const date = Date.now();
-const user_id = user.value!.id;
+const userId = user.value!.id;
 const monthDay = extractMonthDay(date);
+const supabase = useSupabase();
 
-const { entries } = useEntries({ user_id, monthDay });
+const entries = await useEntries({ userId, monthDay });
 // const { data: entries } = await useAsyncData('entries', async () => {
 //   const { data } = await supabase
 //     .from('entries')
 //     .select()
-//     .eq('user_id', user_id)
+//     .eq('user_id', userId)
 //     .eq('month_day', monthDay)
 //     .order('created_ts', { ascending: false });
 //   return data;
 // });
+
+// console.log('entries', entries);
 </script>
 <template>
   <h2>{{ upperCase('today is') }}</h2>

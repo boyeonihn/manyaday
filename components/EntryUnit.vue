@@ -1,12 +1,12 @@
 <script setup lang="ts">
-defineProps({
-  content: String,
-  createdAt: String,
-});
+const props = defineProps<{
+  content: string;
+  createdAt: string;
+}>();
 </script>
 <template>
   <section>
-    <h3>{{ extractYear(createdAt!) }}</h3>
+    <h3>{{ extractYear(createdAt) }}</h3>
     <div>{{ content }}</div>
   </section>
 </template>

@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types';
-import { format } from 'date-fns';
-import type { Database } from '@/types/database.types';
 
-const supabase = useSupabaseClient<Database>();
+const supabase = useSupabase();
 const user = useSupabaseUser();
 const user_id = user.value!.id;
 
@@ -30,7 +28,6 @@ const savePost = () => {
 };
 
 const createEntry = async (event: FormSubmitEvent<any>) => {
-  // need to reach supabase to add entry
   if (entry.content.trim().length === 0) {
     return;
   }

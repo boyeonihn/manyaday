@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { format } from 'date-fns';
-import type { Database } from '@/types/database.types';
 const user = useSupabaseUser();
-const supabase = useSupabaseClient<Database>();
+const supabase = useSupabase();
 
 const date = Date.now();
 const user_id = user.value!.id;

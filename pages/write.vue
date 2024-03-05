@@ -61,7 +61,11 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
         <UButton
           class="date"
           icon="i-heroicons-calendar-days-20-solid"
-          :label="'[ [  ' + formatMmDdYyyy(entry.date.getTime()) + '  ] ]'"
+          :label="
+            '[ [  ' +
+            formatDate({ date: entry.date.getTime(), includeYear: true }) +
+            '  ] ]'
+          "
       /></span>
       <template #panel="{ close }">
         <DatePicker v-model="entry.date" @close="close" />

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { format } from 'date-fns';
 const user = useSupabaseUser();
 const supabase = useSupabase();
 
@@ -19,9 +18,9 @@ const { data: entries } = await useAsyncData('entries', async () => {
 </script>
 <template>
   <h2>{{ upperCase('today is') }}</h2>
-  <h1>{{ `[[  ${formatMmDdYyyy(date)}  ]]` }}</h1>
+  <h1>{{ `[[  ${formatDate({ date, includeYear: true })}  ]]` }}</h1>
   <LogoutButton />
-  <p>Here are all the diaries from {{ format(date, 'MMMM do') }}.</p>
+  <p>Here are all the diaries from {{ formatDate({ date }) }}.</p>
   <ul>
     <li v-for="entry in entries" :key="entry.id">
       <EntryUnit :content="entry.content" :createdAt="entry.created_ts" />

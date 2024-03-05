@@ -1,20 +1,20 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
-const supabase = useSupabase();
 
 const date = Date.now();
 const user_id = user.value!.id;
-
 const monthDay = extractMonthDay(date);
-const { data: entries } = await useAsyncData('entries', async () => {
-  const { data } = await supabase
-    .from('entries')
-    .select()
-    .eq('user_id', user_id)
-    .eq('month_day', monthDay)
-    .order('created_ts', { ascending: false });
-  return data;
-});
+
+const { entries } = useEntries({ user_id, monthDay });
+// const { data: entries } = await useAsyncData('entries', async () => {
+//   const { data } = await supabase
+//     .from('entries')
+//     .select()
+//     .eq('user_id', user_id)
+//     .eq('month_day', monthDay)
+//     .order('created_ts', { ascending: false });
+//   return data;
+// });
 </script>
 <template>
   <h2>{{ upperCase('today is') }}</h2>

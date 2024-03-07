@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types';
-import type { Database } from '@/types/database.types';
-import { format } from 'date-fns';
 
-const supabase = useSupabaseClient<Database>();
-const user = useSupabaseUser();
-const user_id = user.value!.id;
+const supabase = useSupabase();
+const user = useUser();
+const userId = user.value.id;
 
 const entry = reactive({
   date: new Date(),
@@ -30,7 +28,6 @@ const savePost = () => {
 };
 
 const createEntry = async (event: FormSubmitEvent<any>) => {
-  // need to reach supabase to add entry
   if (entry.content.trim().length === 0) {
     return;
   }
@@ -39,7 +36,7 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
     content: entry.content,
     is_private: entry.isPrivate,
     created_ts: entry.date.toDateString(),
-    user_id,
+    user_id: userId,
   });
   if (error) {
     status = 'error';
@@ -62,8 +59,13 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
       <span
         >writing a post for
         <UButton
+          class="date"
           icon="i-heroicons-calendar-days-20-solid"
-          :label="'[ [  ' + format(entry.date, 'MMM do, yyy') + '  ] ]'"
+          :label="
+            '[ [  ' +
+            formatDate({ date: entry.date.getTime(), includeYear: true }) +
+            '  ] ]'
+          "
       /></span>
       <template #panel="{ close }">
         <DatePicker v-model="entry.date" @close="close" />
@@ -86,3 +88,11 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
     <UButton type="submit"> Publish </UButton>
   </UForm>
 </template>
+
+<style>
+.date {
+  font-family: 'Italiana';
+  font-size: 1.5rem;
+  padding: 15px;
+}
+</style>

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types';
-import type { Database } from '@/types/database.types';
 
-const supabase = useSupabaseClient<Database>();
+const supabase = useSupabase();
 
 const state = reactive({
   email: undefined,
@@ -26,8 +25,6 @@ const signupEmail = async () => {
     email: state.email!,
     password: state.password!,
   });
-
-  console.log(data);
 };
 </script>
 

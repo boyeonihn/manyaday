@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types';
 const runtimeConfig = useRuntimeConfig();
-const supabase = useSupabaseClient();
+const supabase = useSupabase();
 const user = useSupabaseUser();
 
 watchEffect(() => {
   if (user.value) {
-    console.log('logged in');
     navigateTo('/today');
   }
 });

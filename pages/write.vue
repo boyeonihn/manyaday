@@ -2,8 +2,8 @@
 import type { FormError, FormSubmitEvent } from '#ui/types';
 
 const supabase = useSupabase();
-const user = useSupabaseUser();
-const user_id = user.value!.id;
+const user = useUser();
+const userId = user.value.id;
 
 const entry = reactive({
   date: new Date(),
@@ -36,7 +36,7 @@ const createEntry = async (event: FormSubmitEvent<any>) => {
     content: entry.content,
     is_private: entry.isPrivate,
     created_ts: entry.date.toDateString(),
-    user_id,
+    user_id: userId,
   });
   if (error) {
     status = 'error';

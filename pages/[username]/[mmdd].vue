@@ -13,10 +13,9 @@ definePageMeta({
   validate: async (route) => {
     let { username, mmdd } = route.params;
     username = typeof username === 'string' ? username : username[0];
-    if (mmdd.length != 4) return false;
 
     const fetchedUserId = await useFindUser(username);
-    if (!fetchedUserId) return false;
+    if (!fetchedUserId || mmdd.length != 4) return false;
 
     return true;
   },

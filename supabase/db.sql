@@ -21,16 +21,21 @@ create or alter policy "Users can update own profile."
   using ( auth.uid() = user_id );
 
 -- inserts a row into public.profiles
+-- extracts username from email upon account creation
 create or replace function public.handle_new_user() 
 returns trigger as $$
+declare 
+  generated_username TEXT; 
 begin
+  generated_username := public.generate_username(new.email);
+
   insert into public.profiles (user_id, email, username)
-  values (new.id, new.email);
+  values (new.id, new.email, generated_username);
   return new;
 end;
 $$ language plpgsql security definer;
 
--- trigger the function everytime a user is created 
+-- trigger the handle new user function everytime a user is created 
 create or replace trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
@@ -98,17 +103,3 @@ begin
   return substring(email from '([^@]+)') || '-' || substring(md5(random()::text || clock_timestamp()::text)::text from 1 for 4);
 end
 $$ language plpgsql security definer; 
-
--- update function handle_new_user to insert both email and username
-create or replace function public.handle_new_user() 
-returns trigger as $$
-declare 
-  generated_username TEXT; 
-begin
-  generated_username := public.generate_username(new.email);
-
-  insert into public.profiles (user_id, email, username)
-  values (new.id, new.email, generated_username);
-  return new;
-end;
-$$ language plpgsql security definer;

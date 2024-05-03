@@ -6,16 +6,23 @@ let {
 const monthDay = `${mmdd.slice(0, 2)}-${mmdd.slice(2)}`;
 username = typeof username === 'string' ? username : username[0];
 
-const userId = (await useFindUser(username)) as string;
+// TODO: refactor code by creating another composable that integrates INNER JOIN to fetch entries
+// with username and mmdd (without having two requests userid, and then entries)
+
+const { data } = await useUserIdByUsername(username);
+
+if (!data.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Page Not Found' });
+}
+
+const userId = data.value;
 const entries = await useEntries({ userId, monthDay });
 
 definePageMeta({
   validate: async (route) => {
     let { username, mmdd } = route.params;
     username = typeof username === 'string' ? username : username[0];
-
-    const fetchedUserId = await useFindUser(username);
-    if (!fetchedUserId || mmdd.length != 4) return false;
+    if (mmdd.length !== 4 || isNaN(Number(mmdd))) return false;
 
     return true;
   },

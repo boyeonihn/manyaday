@@ -8,20 +8,17 @@ username = typeof username === 'string' ? username : username[0];
 
 // TODO: refactor code by creating another composable that integrates INNER JOIN to fetch entries
 // with username and mmdd (without having two requests userid, and then entries)
-
-const { data } = await useUserIdByUsername(username);
-
+const { data } = await useUserByUsername(username);
 if (!data.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found' });
 }
 
-const userId = data.value;
+const userId = data.value.user_id;
 const entries = await useEntries({ userId, monthDay });
 
 definePageMeta({
   validate: async (route) => {
-    let { username, mmdd } = route.params;
-    username = typeof username === 'string' ? username : username[0];
+    let { mmdd } = route.params;
     if (mmdd.length !== 4 || isNaN(Number(mmdd))) return false;
 
     return true;

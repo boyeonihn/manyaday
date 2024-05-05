@@ -1,12 +1,12 @@
 -- profiles
-create table profiles (
+create or alter table profiles (
   id uuid not null primary key default uuid_generate_v4(),
   user_id uuid references auth.users on delete cascade  not null,
   created_ts TIMESTAMP WITH TIME ZONE not null default now(),
   updated_ts TIMESTAMP WITH TIME ZONE,
-  first_name text,
-  last_name text,
-  username text
+  username text,
+  last_name text, 
+  first_name text
 );
 
 alter table profiles enable row level security;
@@ -21,16 +21,21 @@ create or alter policy "Users can update own profile."
   using ( auth.uid() = user_id );
 
 -- inserts a row into public.profiles
+-- extracts username from email upon account creation
 create or replace function public.handle_new_user() 
 returns trigger as $$
+declare 
+  generated_username TEXT; 
 begin
-  insert into public.profiles (user_id, username)
-  values (new.id, new.email);
+  generated_username := public.generate_username(new.email);
+
+  insert into public.profiles (user_id, email, username)
+  values (new.id, new.email, generated_username);
   return new;
 end;
 $$ language plpgsql security definer;
 
--- trigger the function everytime a user is created 
+-- trigger the handle new user function everytime a user is created 
 create or replace trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
@@ -84,3 +89,17 @@ create index idx_month_day ON public.entries("month_day")
 
 -- if I want to change the index I have to drop it first 
 -- drop index idx_month_day ON public.entries
+
+-- alter structure of profiles 
+alter table profiles
+  drop first_name,
+  drop last_name,
+  add email text
+
+-- extract username from email upon user signup
+create or replace function public.generate_username(email TEXT)
+returns TEXT as $$
+begin 
+  return substring(email from '([^@]+)') || '-' || substring(md5(random()::text || clock_timestamp()::text)::text from 1 for 4);
+end
+$$ language plpgsql security definer; 

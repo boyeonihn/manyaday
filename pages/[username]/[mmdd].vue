@@ -16,7 +16,7 @@ username = typeof username === 'string' ? username : username[0];
 
 // TODO: refactor code by creating another composable that integrates INNER JOIN to fetch entries
 // with username and mmdd (without having two requests userid, and then entries)
-const { data } = await useUserByUsername(username);
+const { data } = await useProfileByUsername(username);
 if (!data.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found' });
 }

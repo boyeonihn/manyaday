@@ -4,9 +4,8 @@ create table profiles (
   user_id uuid references auth.users on delete cascade  not null,
   created_ts TIMESTAMP WITH TIME ZONE not null default now(),
   updated_ts TIMESTAMP WITH TIME ZONE,
-  username text,
-  last_name text, 
-  first_name text
+  username text
+  is_public boolean not null default false 
 );
 
 alter table profiles enable row level security;
@@ -90,12 +89,6 @@ create index idx_month_day ON public.entries("month_day")
 -- if I want to change the index I have to drop it first 
 -- drop index idx_month_day ON public.entries
 
--- alter structure of profiles 
-alter table profiles
-  drop first_name,
-  drop last_name,
-  add email text
-
 -- extract username from email upon user signup
 create or replace function public.generate_username(email TEXT)
 returns TEXT as $$
@@ -103,8 +96,3 @@ begin
   return substring(email from '([^@]+)') || '-' || substring(md5(random()::text || clock_timestamp()::text)::text from 1 for 4);
 end
 $$ language plpgsql security definer; 
-
-
--- alter structure of profiles table
-alter table profiles
-  add is_public boolean not null default false 

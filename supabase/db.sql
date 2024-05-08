@@ -1,5 +1,5 @@
 -- profiles
-create or alter table profiles (
+create table profiles (
   id uuid not null primary key default uuid_generate_v4(),
   user_id uuid references auth.users on delete cascade  not null,
   created_ts TIMESTAMP WITH TIME ZONE not null default now(),
@@ -103,3 +103,8 @@ begin
   return substring(email from '([^@]+)') || '-' || substring(md5(random()::text || clock_timestamp()::text)::text from 1 for 4);
 end
 $$ language plpgsql security definer; 
+
+
+-- alter structure of profiles table
+alter table profiles
+  add is_public boolean not null default false 

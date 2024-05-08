@@ -96,3 +96,10 @@ begin
   return substring(email from '([^@]+)') || '-' || substring(md5(random()::text || clock_timestamp()::text)::text from 1 for 4);
 end
 $$ language plpgsql security definer; 
+
+-- update RLS policy on public.profiles
+alter policy "Can view own profile." on profiles rename to "Can view profile and other users' public profiles."
+
+alter policy "Can view profile and other users' public profiles." on profiles for 
+select
+  using (is_public = true or auth.uid() = user_id)

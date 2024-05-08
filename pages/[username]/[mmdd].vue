@@ -3,6 +3,14 @@ let {
   params: { mmdd, username },
 } = useRoute();
 
+const supabase = useSupabase();
+const user = useUser();
+const { data: loggedUser } = await supabase
+  .from('profiles')
+  .select('username')
+  .eq('user_id', user.value.id)
+  .single();
+
 const monthDay = `${mmdd.slice(0, 2)}-${mmdd.slice(2)}`;
 username = typeof username === 'string' ? username : username[0];
 
@@ -26,6 +34,7 @@ definePageMeta({
 });
 </script>
 <template>
+  <p>logged in user: {{ loggedUser!.username }}</p>
   <h1>{{ username }}'s entries for {{ monthDay }}</h1>
   <ul>
     <li v-for="entry in entries" :key="entry.id">
